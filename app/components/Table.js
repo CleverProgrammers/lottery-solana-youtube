@@ -2,9 +2,14 @@ import { useAppContext } from "../context/context";
 import style from "../styles/Table.module.css";
 import TableRow from "./TableRow";
 
-const Table = () => {
-  const { lotteryHistory } = useAppContext();
+import { PublicKey } from '@solana/web3.js';
 
+const Table = () => {
+  const lotteryHistory = [
+    { lotteryId: 0, winnerId: 2, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '15' },
+    { lotteryId: 1, winnerId: 5, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '40' },
+    { lotteryId: 2, winnerId: 99, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '99' },
+  ]
   return (
     <div className={style.wrapper}>
       <div className={style.tableHeader}>
