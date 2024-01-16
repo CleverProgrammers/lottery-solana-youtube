@@ -14,10 +14,13 @@
     "@solana/wallet-adapter-react": "^0.15.18",
     "@solana/wallet-adapter-react-ui": "^0.9.16",
     "@solana/wallet-adapter-wallets": "^0.18.7",
-    "next": "12.2.5",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-hot-toast": "^2.3.0"
+    "@swc/helpers": "^0.5.3",
+    "local-storage": "^2.0.0",
+    "next": "^14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.1",
+    "swr": "^2.2.4"
   },
   "devDependencies": {
     "eslint": "8.21.0",
