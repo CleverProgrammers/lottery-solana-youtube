@@ -3,7 +3,7 @@ import { shortenPk } from "../utils/helper";
 
 const TableRow = ({
   lotteryId,
-  winnerAddress = "4koeNJ39zejjuCyVQdZmzsx28CfJoarrv4vmsuHjFSB6",
+  winnerAddress,
   winnerId,
   prize,
 }) => {

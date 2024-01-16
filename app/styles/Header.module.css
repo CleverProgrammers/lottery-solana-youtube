@@ -2,7 +2,7 @@
   background-color: #383c47;
   width: 100%;
   min-height: 50px;
-  color: #f1f1f3;
+  color: #f3f2f1;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -11,6 +11,7 @@
   top: 0;
   left: 0;
   border-bottom: 1px solid white;
+  font-size: 2rem;
 }
 
 .title {
@@ -37,7 +38,7 @@
 }
 
 .welcome {
-  font-size: 1rem;
+  font-size: 2rem;
   font-weight: bolder;
 }
 
