@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <div className={style.wrapper}>
       <div className={style.title}>Lottery DAPP 💰</div>
-      <button>Connect Wallet</button>
+      <WalletMultiButton/>
     </div>
   );
 };
