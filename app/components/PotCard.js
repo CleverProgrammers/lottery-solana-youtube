@@ -10,7 +10,7 @@ import { useAppContext } from "../context/context";
 
 const PotCard = () => {
 
-  const { connected, isMasterInitialized, initMaster } = useAppContext();
+  const { connected, isMasterInitialized, initMaster, createLottery } = useAppContext();
   console.log(connected, "CONNECTION STATUS")                 
 
   // Static Data
@@ -36,20 +36,20 @@ const PotCard = () => {
 
   // Static Functions 
 
-  const connectWallet = () => {
-    setConnected(true)
-    console.log("Connecting static wallet")
-  }
+  // const connectWallet = () => {
+  //   setConnected(true)
+  //   console.log("Connecting static wallet")
+  // }
 
   // const initMaster = () => {
   //   setIsMasterInitialized(true)
   //   console.log("Initialized Master")
   // }
 
-  const createLottery = () => {
-    // updates the lottery id
-    console.log("Creating a new lottery")
-  }
+  // const createLottery = () => {
+  //   // updates the lottery id
+  //   console.log("Creating a new lottery")
+  // }
 
   const buyTicket = () => {
     // buys a ticket for the current lottery displayed

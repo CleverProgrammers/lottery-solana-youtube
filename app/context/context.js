@@ -14,6 +14,7 @@ export const AppProvider = ({ children }) => {
 
   const [masterAddress, setMasterAddress] = useState();
   const [initialized, setInitialized] = useState(false);
+  const [lotteryId, setLotteryId] = useState()
 
   // Get Provider
   const { connection } = useConnection()
@@ -38,7 +39,6 @@ export const AppProvider = ({ children }) => {
         const masterAddress = await getMasterAddress()
         // how to de save master address => using useState
         setMasterAddress(masterAddress)
-        console.log(masterAddress)
       }
       // fetching the master object
       const master = await program.account.master.fetch(
@@ -46,6 +46,7 @@ export const AppProvider = ({ children }) => {
       )
       console.log(master)
       setInitialized(true)
+      setLotteryId(master.lastId)
     } catch(err) {
       console.log(err.message)      
     }
@@ -66,9 +67,33 @@ export const AppProvider = ({ children }) => {
       await confirmTx(txHash, connection)
 
       updateState()
+      toast.success("Initialized Master!")
 
     } catch (err) {
       console.log(err.message)
+      toast.error(err.message)
+    }
+  }
+
+  const createLottery = async() => {
+    try {
+      const lotteryAddress = await getLotteryAddress(lotteryId + 1)  // hold the PDA
+      const txHash = await program.methods
+      .createLottery(new BN(1).mul(new BN(LAMPORTS_PER_SOL)))
+      .accounts({
+        lottery: lotteryAddress,
+        master: masterAddress,
+        authority: wallet.publicKey,
+        systemProgram: SystemProgram.programId
+      })
+      .rpc()
+      await confirmTx(txHash, connection)
+
+      updateState()
+      toast.success("Lottery Created!")
+    } catch (err) {
+      console.log(err.message)
+      toast.error(err.message)
     }
   }
 
@@ -79,6 +104,7 @@ export const AppProvider = ({ children }) => {
         connected: wallet?.publicKey ? true : false,
         isMasterInitialized: initialized,
         initMaster,
+        createLottery,
       }}
     >
       {children}
