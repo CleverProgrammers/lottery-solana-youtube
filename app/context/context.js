@@ -15,6 +15,9 @@ export const AppProvider = ({ children }) => {
   const [masterAddress, setMasterAddress] = useState();
   const [initialized, setInitialized] = useState(false);
   const [lotteryId, setLotteryId] = useState()
+  const [lotteryPot, setLotteryPot] = useState()
+  const [lottery, setLottery] = useState()
+  const [lotteryAddress, setLotteryAddress] = useState()
 
   // Get Provider
   const { connection } = useConnection()
@@ -30,6 +33,11 @@ export const AppProvider = ({ children }) => {
     updateState()                               
   }, [program] )   // array is called dependency module
 
+  useEffect(() => {
+    if (!lottery) return
+    getPot();
+  }, [lottery])
+
   const updateState = async () => {
     if(!program) return;
 
@@ -44,9 +52,13 @@ export const AppProvider = ({ children }) => {
       const master = await program.account.master.fetch(
         masterAddress ?? (await getMasterAddress())
       )
-      console.log(master)
+      // console.log(master)
       setInitialized(true)
       setLotteryId(master.lastId)
+      const lotteryAddress = await getLotteryAddress(master.lastId)  // hold the PDA
+      setLotteryAddress(lotteryAddress)
+      const lottery = await program.account.lottery.fetch(lotteryAddress)
+      setLottery(lottery)
     } catch(err) {
       console.log(err.message)      
     }
@@ -84,14 +96,65 @@ export const AppProvider = ({ children }) => {
         lottery: lotteryAddress,
         master: masterAddress,
         authority: wallet.publicKey,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      await confirmTx(txHash, connection);
+      updateState()
+      toast.success("Lottery Created!")
+    } catch (err) {
+      console.log(err.message)
+      toast.error(err.message)
+    }
+  }
+
+  const getPot = async() => {
+    const pot = getTotalPrize(lottery)
+    setLotteryPot(pot)
+  }
+
+  const buyTicket = async() => {
+    try {
+      // Ensure lottery is defined before proceeding
+      if (!lottery) {
+        console.log("Lottery is not yet initialized");
+        return;
+      }
+  
+      const txHash = await program.methods
+      .buyTicket(lotteryId)
+      .accounts({
+        lottery: lotteryAddress,
+        ticket: await getTicketAddress(
+          lotteryAddress,
+          lottery.lastTicketId + 1,
+        ),
+        buyer: wallet.publicKey,
         systemProgram: SystemProgram.programId
       })
       .rpc()
       await confirmTx(txHash, connection)
-
       updateState()
-      toast.success("Lottery Created!")
-    } catch (err) {
+      toast.success("Bought a Ticket!")
+    }
+    catch(err) {
+      console.log(err.message)
+      toast.error(err.message)
+    }
+  }
+
+  const pickWinner = async() => {
+    try {
+      const txHash = await program.methods
+      .pickWinner(lotteryId)
+      .accounts({
+        lottery: lotteryAddress,
+        authority: wallet.publicKey
+      })
+      .rpc();
+      
+    }
+    catch(err) {
       console.log(err.message)
       toast.error(err.message)
     }
@@ -103,8 +166,13 @@ export const AppProvider = ({ children }) => {
         // Put functions/variables you want to bring out of context to App in here
         connected: wallet?.publicKey ? true : false,
         isMasterInitialized: initialized,
+        lotteryId,
+        lotteryPot,
+        isLotteryAuthority: wallet && lottery && wallet.publicKey.equals(lottery.authority),
         initMaster,
         createLottery,
+        buyTicket,
+        lottery
       }}
     >
       {children}

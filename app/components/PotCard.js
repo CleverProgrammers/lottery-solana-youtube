@@ -10,12 +10,21 @@ import { useAppContext } from "../context/context";
 
 const PotCard = () => {
 
-  const { connected, isMasterInitialized, initMaster, createLottery } = useAppContext();
+  const { 
+    connected,
+    isMasterInitialized,
+    lotteryId,
+    lotteryPot,
+    isLotteryAuthority,
+    initMaster,
+    createLottery,
+    buyTicket,
+    } = useAppContext();
   console.log(connected, "CONNECTION STATUS")                 
 
   // Static Data
-  const lotteryId = 3
-  const lotteryPot = 1000
+  // const lotteryId = 3
+  // const lotteryPot = 1000
 
   const lotteryHistory = [
     { lotteryId: 3, winnerId: 3, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '15' }
@@ -26,7 +35,7 @@ const PotCard = () => {
   // Is Wallet connected?
   // const [connected, setConnected] = useState(false)
   // Did the connected wallet create the lottery?
-  const isLotteryAuthority = true
+  // const isLotteryAuthority = true
   // Is the master created for smart contract?
   // const [isMasterInitialized, setIsMasterInitialized] = useState(false)
   // Is there already a winner for the lottery?
@@ -51,10 +60,10 @@ const PotCard = () => {
   //   console.log("Creating a new lottery")
   // }
 
-  const buyTicket = () => {
-    // buys a ticket for the current lottery displayed
-    console.log("Purchasing ticket for current lottery")
-  }
+  // const buyTicket = () => {
+  //   // buys a ticket for the current lottery displayed
+  //   console.log("Purchasing ticket for current lottery")
+  // }
 
   const pickWinner = () => {
     setCanClaim(true)
