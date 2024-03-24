@@ -220,7 +220,7 @@ export const AppProvider = ({ children }) => {
         ticket: await getTicketAddress(lotteryAddress, userWinningId),
         authority: wallet.publicKey,
         systemProgram: SystemProgram.programId,
-      })
+      })  
       .rpc()
       await confirmTx(txHash, connection)
 
