@@ -18,6 +18,7 @@ export const AppProvider = ({ children }) => {
   const [lotteryPot, setLotteryPot] = useState()
   const [lottery, setLottery] = useState()
   const [lotteryAddress, setLotteryAddress] = useState()
+  const [userWinningId, setUserWinningId] = useState(false)
 
   // Get Provider
   const { connection } = useConnection()
@@ -59,6 +60,22 @@ export const AppProvider = ({ children }) => {
       setLotteryAddress(lotteryAddress)
       const lottery = await program.account.lottery.fetch(lotteryAddress)
       setLottery(lottery)
+
+      // Get the users tickets for the current lottery
+      if(!wallet?.publicKey) return;
+      const usersTickets = await program.account.ticket.all()
+      console.log(usersTickets, "Tickets")
+
+      // check whether any of userTickets win
+      const userWin = usersTickets.some(
+        (ticket) => ticket.account.id === lottery.winnerId
+      );
+      if(userWin) {
+        setUserWinningId(lottery.winnerId)
+      }
+      else {
+        setUserWinningId(null)
+      }
     } catch(err) {
       console.log(err.message)      
     }
@@ -152,7 +169,10 @@ export const AppProvider = ({ children }) => {
         authority: wallet.publicKey
       })
       .rpc();
-      
+      await confirmTx(txHash, connection)
+
+      updateState()
+      toast.success("Picked a Winner!")
     }
     catch(err) {
       console.log(err.message)
@@ -169,10 +189,12 @@ export const AppProvider = ({ children }) => {
         lotteryId,
         lotteryPot,
         isLotteryAuthority: wallet && lottery && wallet.publicKey.equals(lottery.authority),
+        isFinished: lottery && lottery.winnerId,
+        canClaim: lottery && !lottery.claimed && userWinningId,
         initMaster,
         createLottery,
         buyTicket,
-        lottery
+        pickWinner
       }}
     >
       {children}

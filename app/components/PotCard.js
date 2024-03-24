@@ -16,6 +16,8 @@ const PotCard = () => {
     lotteryId,
     lotteryPot,
     isLotteryAuthority,
+    isFinished,
+    canClaim,
     initMaster,
     createLottery,
     buyTicket,
@@ -39,9 +41,9 @@ const PotCard = () => {
   // Is the master created for smart contract?
   // const [isMasterInitialized, setIsMasterInitialized] = useState(false)
   // Is there already a winner for the lottery?
-  const [isFinished, setIsFinished] = useState(false)
+  // const [isFinished, setIsFinished] = useState(false)
   // If there is a winner can that winner claim the prize?
-  const [canClaim, setCanClaim] = useState(false)
+  // const [canClaim, setCanClaim] = useState(false)
 
   // Static Functions 
 
