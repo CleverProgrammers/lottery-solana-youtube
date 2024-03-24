@@ -1,16 +1,15 @@
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import style from "../styles/PotCard.module.css";
 import { shortenPk } from "../utils/helper";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 // Temp imports
-import { PublicKey } from '@solana/web3.js';
-import { useState } from "react"
+import { PublicKey } from "@solana/web3.js";
+import { useState } from "react";
 
 import { useAppContext } from "../context/context";
 
 const PotCard = () => {
-
-  const { 
+  const {
     connected,
     isMasterInitialized,
     lotteryId,
@@ -21,16 +20,18 @@ const PotCard = () => {
     initMaster,
     createLottery,
     buyTicket,
-    } = useAppContext();
-  console.log(connected, "CONNECTION STATUS")                 
-
+    pickWinner,
+    lotteryHistory,
+    claimPrize,
+  } = useAppContext();
+  console.log(connected, "CONNECTION STATUS");
   // Static Data
   // const lotteryId = 3
   // const lotteryPot = 1000
 
-  const lotteryHistory = [
-    { lotteryId: 3, winnerId: 3, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '15' }
-  ]
+  // const lotteryHistory = [
+  //   { lotteryId: 3, winnerId: 3, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '15' }
+  // ]
 
   // Static States:
 
@@ -45,7 +46,7 @@ const PotCard = () => {
   // If there is a winner can that winner claim the prize?
   // const [canClaim, setCanClaim] = useState(false)
 
-  // Static Functions 
+  // Static Functions
 
   // const connectWallet = () => {
   //   setConnected(true)
@@ -67,15 +68,15 @@ const PotCard = () => {
   //   console.log("Purchasing ticket for current lottery")
   // }
 
-  const pickWinner = () => {
-    setCanClaim(true)
-    console.log("Picking a winner and allowing that winner to claim the ticket")
-  }
+  // const pickWinner = () => {
+  //   setCanClaim(true)
+  //   console.log("Picking a winner and allowing that winner to claim the ticket")
+  // }
 
-  const claimPrize = () => {
-    setCanClaim(false)
-    console.log("You're the winner! Claiming your prize now...")
-  }
+  // const claimPrize = () => {
+  //   setCanClaim(false);
+  //   console.log("You're the winner! Claiming your prize now...");
+  // };
 
   if (!isMasterInitialized)
     return (
@@ -93,7 +94,7 @@ const PotCard = () => {
           // Wallet multibutton goes here
           // <WalletMultiButton/>
           // <button onClick={() => connectWallet()}>Connect Wallet</button>
-          <WalletMultiButton/>
+          <WalletMultiButton />
         )}
       </div>
     );
@@ -112,6 +113,7 @@ const PotCard = () => {
             lotteryHistory[lotteryHistory.length - 1].winnerAddress.toBase58()
           )}
       </div>
+
       {connected ? (
         <>
           {!isFinished && (
@@ -139,7 +141,7 @@ const PotCard = () => {
       ) : (
         // <WalletMultiButton/>
         // <button onClick={() => connectWallet()}>Connect Wallet</button>
-        <WalletMultiButton/>
+        <WalletMultiButton />
       )}
     </div>
   );

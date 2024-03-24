@@ -15,10 +15,11 @@ export const AppProvider = ({ children }) => {
   const [masterAddress, setMasterAddress] = useState();
   const [initialized, setInitialized] = useState(false);
   const [lotteryId, setLotteryId] = useState()
-  const [lotteryPot, setLotteryPot] = useState()
+  const [lotteryPot, setLotteryPot] = useState() 
   const [lottery, setLottery] = useState()
   const [lotteryAddress, setLotteryAddress] = useState()
   const [userWinningId, setUserWinningId] = useState(false)
+  const [lotteryHistory, setLotteryHistory] = useState([])
 
   // Get Provider
   const { connection } = useConnection()
@@ -37,6 +38,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     if (!lottery) return
     getPot();
+    getHistory();
   }, [lottery])
 
   const updateState = async () => {
@@ -180,6 +182,57 @@ export const AppProvider = ({ children }) => {
     }
   }
 
+  const getHistory = async() => {
+    if(!lotteryId) return
+
+    const history = []
+
+    for (const i in new Array(lotteryId).fill(null)){
+      const id = lotteryId - parseInt(i)
+      if (!id) break;
+
+      const lotteryAddress = await getLotteryAddress(id)
+      const lottery = await program.account.lottery.fetch(lotteryAddress)
+
+      const winnerId = lottery.winnerId
+      if(!winnerId) continue;
+
+      const ticketAddress = await getTicketAddress(lotteryAddress, winnerId)
+      const ticket = await program.account.ticket.fetch(ticketAddress)
+
+      history.push({
+        lotteryId: id,
+        winnerId: winnerId,
+        winnerAddress: ticket.authority,
+        prize: getTotalPrize(lottery),
+      })
+    }
+    console.log(history, "HISTORY")
+    setLotteryHistory(history)
+  }
+
+  const claimPrize = async() => {
+    try {
+      const txHash = await program.methods
+      .claimPrize(lotteryId, userWinningId)
+      .accounts({
+        lottery: lotteryAddress,
+        ticket: await getTicketAddress(lotteryAddress, userWinningId),
+        authority: wallet.publicKey,
+        systemProgram: SystemProgram.programId,
+      })
+      .rpc()
+      await confirmTx(txHash, connection)
+
+      updateState()
+      toast.success("Claimed the Prize!")
+    }
+    catch(err) {
+      console.log(err.message)
+      toast.error(err.message)
+    }
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -194,7 +247,9 @@ export const AppProvider = ({ children }) => {
         initMaster,
         createLottery,
         buyTicket,
-        pickWinner
+        pickWinner,
+        lotteryHistory,
+        claimPrize,
       }}
     >
       {children}
