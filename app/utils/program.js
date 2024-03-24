@@ -12,16 +12,16 @@ import {
 // How to fetch our Program
 export const getProgram = (connection, wallet) => {
   const provider = new AnchorProvider(connection, wallet, {
-    commitment: "confirmed",
+    commitment: "confirmed",                                    
   });
-  const program = new Program(IDL, PROGRAM_ID, provider);
-  return program;
-};
+  const program = new Program(IDL, PROGRAM_ID, provider);     
+  return program;                                         
+};                                                        
 
 export const getMasterAddress = async () => {
   return (
     await PublicKey.findProgramAddress([Buffer.from(MASTER_SEED)], PROGRAM_ID)
-  )[0];
+  )[0];                                                       
 };
 
 export const getLotteryAddress = async (id) => {
@@ -39,7 +39,7 @@ export const getTicketAddress = async (lotteryPk, id) => {
       [
         Buffer.from(TICKET_SEED),
         lotteryPk.toBuffer(),
-        new BN(id).toArrayLike(Buffer, "le", 4),
+        new BN(id).toArrayLike(Buffer, "le", 4),    
       ],
       PROGRAM_ID
     )

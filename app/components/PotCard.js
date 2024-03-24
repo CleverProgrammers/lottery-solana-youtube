@@ -1,65 +1,82 @@
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import style from "../styles/PotCard.module.css";
-import { useAppContext } from "../context/context";
 import { shortenPk } from "../utils/helper";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 // Temp imports
-import { PublicKey } from '@solana/web3.js';
-import { useState } from "react"
+import { PublicKey } from "@solana/web3.js";
+import { useState } from "react";
+
+import { useAppContext } from "../context/context";
 
 const PotCard = () => {
+  const {
+    connected,
+    isMasterInitialized,
+    lotteryId,
+    lotteryPot,
+    isLotteryAuthority,
+    isFinished,
+    canClaim,
+    initMaster,
+    createLottery,
+    buyTicket,
+    pickWinner,
+    lotteryHistory,
+    claimPrize,
+  } = useAppContext();
+  console.log(connected, "CONNECTION STATUS");
   // Static Data
-  const lotteryId = 3
-  const lotteryPot = 1000
+  // const lotteryId = 3
+  // const lotteryPot = 1000
 
-  const lotteryHistory = [
-    { lotteryId: 3, winnerId: 3, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '15' }
-  ]
+  // const lotteryHistory = [
+  //   { lotteryId: 3, winnerId: 3, winnerAddress: new PublicKey("11111111111111111111111111111111"), prize: '15' }
+  // ]
 
   // Static States:
 
   // Is Wallet connected?
-  const [connected, setConnected] = useState(false)
+  // const [connected, setConnected] = useState(false)
   // Did the connected wallet create the lottery?
-  const isLotteryAuthority = true
+  // const isLotteryAuthority = true
   // Is the master created for smart contract?
-  const [isMasterInitialized, setIsMasterInitialized] = useState(false)
+  // const [isMasterInitialized, setIsMasterInitialized] = useState(false)
   // Is there already a winner for the lottery?
-  const [isFinished, setIsFinished] = useState(false)
+  // const [isFinished, setIsFinished] = useState(false)
   // If there is a winner can that winner claim the prize?
-  const [canClaim, setCanClaim] = useState(false)
+  // const [canClaim, setCanClaim] = useState(false)
 
-  // Static Functions 
+  // Static Functions
 
-  const connectWallet = () => {
-    setConnected(true)
-    console.log("Connecting static wallet")
-  }
+  // const connectWallet = () => {
+  //   setConnected(true)
+  //   console.log("Connecting static wallet")
+  // }
 
-  const initMaster = () => {
-    setIsMasterInitialized(true)
-    console.log("Initialized Master")
-  }
+  // const initMaster = () => {
+  //   setIsMasterInitialized(true)
+  //   console.log("Initialized Master")
+  // }
 
-  const createLottery = () => {
-    // updates the lottery id
-    console.log("Creating a new lottery")
-  }
+  // const createLottery = () => {
+  //   // updates the lottery id
+  //   console.log("Creating a new lottery")
+  // }
 
-  const buyTicket = () => {
-    // buys a ticket for the current lottery displayed
-    console.log("Purchasing ticket for current lottery")
-  }
+  // const buyTicket = () => {
+  //   // buys a ticket for the current lottery displayed
+  //   console.log("Purchasing ticket for current lottery")
+  // }
 
-  const pickWinner = () => {
-    setCanClaim(true)
-    console.log("Picking a winner and allowing that winner to claim the ticket")
-  }
+  // const pickWinner = () => {
+  //   setCanClaim(true)
+  //   console.log("Picking a winner and allowing that winner to claim the ticket")
+  // }
 
-  const claimPrize = () => {
-    setCanClaim(false)
-    console.log("You're the winner! Claiming your prize now...")
-  }
+  // const claimPrize = () => {
+  //   setCanClaim(false);
+  //   console.log("You're the winner! Claiming your prize now...");
+  // };
 
   if (!isMasterInitialized)
     return (
@@ -75,7 +92,9 @@ const PotCard = () => {
           </>
         ) : (
           // Wallet multibutton goes here
-          <button onClick={() => connectWallet()}>Connect Wallet</button>
+          // <WalletMultiButton/>
+          // <button onClick={() => connectWallet()}>Connect Wallet</button>
+          <WalletMultiButton />
         )}
       </div>
     );
@@ -94,6 +113,7 @@ const PotCard = () => {
             lotteryHistory[lotteryHistory.length - 1].winnerAddress.toBase58()
           )}
       </div>
+
       {connected ? (
         <>
           {!isFinished && (
@@ -119,7 +139,9 @@ const PotCard = () => {
           </div>
         </>
       ) : (
-        <button onClick={() => connectWallet()}>Connect Wallet</button>
+        // <WalletMultiButton/>
+        // <button onClick={() => connectWallet()}>Connect Wallet</button>
+        <WalletMultiButton />
       )}
     </div>
   );
